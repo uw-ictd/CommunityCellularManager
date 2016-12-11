@@ -74,3 +74,17 @@
 
     - name: Setup requirements for building psycopg2 from source
       apt: pkg=libpq-dev state=present update_cache=no
+
+    - name: Add the key for the nodesource apt repository
+      apt_key:
+        url: https://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x1655A0AB68576280
+        id: "68576280"
+        state: present
+
+    - name: Add the nodesource repository
+      apt_repository:
+        repo: 'deb https://deb.nodesource.com/node_0.10 {{ ansible_distribution_release }} main'
+        update_cache: yes
+
+    - name: Install nodejs
+      apt: name=nodejs
