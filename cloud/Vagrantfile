@@ -29,6 +29,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       v.memory = 512
       v.cpus = 1
     end
+    web.vm.provision "ansible" do |ansible|
+        ansible.playbook = "ansible/web.dev.yml"
+        ansible.verbose = true
+    end
     $repos.each do |name, path|
       if File.directory?(path)
         web.vm.synced_folder path, "/home/vagrant/" + name
