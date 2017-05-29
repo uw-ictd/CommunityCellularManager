@@ -345,22 +345,22 @@ class SendSMS(APIView):
             return Response("operator has no credit in Endaga account",
                             status=status.HTTP_400_BAD_REQUEST)
         #see if we own the number
-        num_to = models.Number.objects.get(number=to_)
-        if (num_to):
+        if (models.Number.objects.filter(number=to_).exists()):
+            num_to = models.Number.objects.get(number=to_)
             #we own this number, route locally
             if not (num_to.subscriber):
                 res = "no subscriber for owned number %s" % num_to.number
                 print res
                 return Response(res,
                                 status=status.HTTP_400_BAD_REQUEST)
-
-            if not (num_to.bts):
+            bts = num_to.subscriber.bts
+            if not (bts):
                 res = "no bts for owned number %s" % num_to.number
                 print res
                 return Response(res,
                                 status=status.HTTP_400_BAD_REQUEST)
 
-            url = num_to.bts.inbound_url + "/endaga_sms"
+            url = bts.inbound_url + "/endaga_sms"
             params = {
                 'to': to_,
                 'sender': from_,
@@ -369,7 +369,7 @@ class SendSMS(APIView):
             }
             tasks.async_post.delay(url, params)
             # Bill the operator, as off network for now
-            cost_to_operator = num_to.bts.network.calculate_operator_cost(
+            cost_to_operator = bts.network.calculate_operator_cost(
                 'off_network_receive', 'sms')
             n.network.bill_for_sms(cost_to_operator, 'incoming_sms')
             return Response("", status=status.HTTP_202_ACCEPTED)
