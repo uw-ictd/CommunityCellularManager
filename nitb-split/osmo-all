@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+cmd="${1:-start}"
+set -ex
+systemctl $cmd osmo-hlr osmo-msc osmo-mgw osmo-stp osmo-bsc osmo-bts osmo-trx
+
+# osmo-pcu osmo-ggsn osmo-sgsn
