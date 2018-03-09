@@ -1,7 +1,7 @@
 ---
 
 - name: Set up a network in a box on a local virtual machine
-  hosts: dev
+  hosts: nitb
   become: yes
 
   tasks:

@@ -27,7 +27,6 @@ Vagrant.configure(2) do |config|
     nitb.vm.provision "ansible" do |ansible|
       ansible.host_key_checking = false
       ansible.playbook = "deploy/nitb.yml"
-      ansible.inventory_path = "deploy/hosts"
       ansible.raw_arguments = ['--timeout=20']
       ansible.verbose = 'v'
     end
