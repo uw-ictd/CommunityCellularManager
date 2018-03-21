@@ -34,9 +34,45 @@
           - usbutils
 
     - name: Install uhd drivers for USRP
-      apt: pkg={{ item }} state=present
+      apt: pkg={{ item }} state=present update_cache=no
       with_items:
           - libuhd-dev
           - libuhd003
           - uhd-host
+
+    # TODO(matt9j) Figure out when the images actually need to be
+    # re-downloaded. Flashing the radio firmware may need to take
+    # place on the host to even be detected by virtualbox, but in an
+    # actual deployment will need to take place on the nuc.
+
+    #- name: Download the latest USRP images
+    #  shell: uhd_images_downloader
+
+    - name: Install Osmocom core network components
+      apt: pkg={{ item }} state=present update_cache=no
+      with_items:
+          - osmo-hlr
+          - osmo-msc
+          - osmo-mgw
+          - osmo-stp
+          - osmo-bsc
+
+    - name: Install Osmocom USRP BTS components
+      apt: pkg={{ item }} state=present update_cache=no
+      with_items:
+          - osmo-bts-trx
+          - osmo-trx
+
+    - name: Create a directory for the HLR
+      file:
+          path: /var/lib/osmocom
+          state: directory
+
+    - name: Copy osmocom configuration files
+      copy:
+        src: "{{ item }}"
+        dest: /etc/osmocom/
+        force: yes
+      with_fileglob:
+        - ../config/nitb/*
         
