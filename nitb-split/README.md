@@ -13,27 +13,46 @@ Need to add user to vboxusers
 Import and Provision the VM with vagrant/ansible
 
 Download the UHD images sudo uhd_images_downloader
-*Is there a way to make USB accessible to the vagrant user?
+* Is there a way to make USB accessible to the vagrant user?
 
 Need to log into guest machine and test usb interface (sudo uhd_find_devices)
+* On my system the radio performed best when connected directly to a
+  superspeed usb port on my computer, bypassing any external hubs.
 
 Install osmocom packages
 ------------------------
 
-osmo-hlr
+These packages should be installed by ansible via vagrant as a part of machine provisioning:
+ * osmo-hlr
+ * osmo-msc
+ * osmo-mgw
+ * osmo-stp
+ * osmo-bsc
+ * osmo-bts-trx
+ * osmo-trx
 
-osmo-msc
+ Installed manually for now:
+ * osmo-ggsn
+ * osmo-sgsn
 
-osmo-mgw debian 9 latest build from 17-12-9 depends on libosmo-mgcp0
-but it is not available. libosmo-mgcp1 is available though, maybe a
-dependency specification issue? Might not be apparent when testing
-packages not on a fresh system. Will try nightly. Nightly works!
+Do Osmocom Config
+-----------------
 
-osmo-stp
+Ansible via vagrant will copy the osmocom configuration files in
+version control here into the guest VM. If they are modified they will
+need to be recopied to /etc/osmocom/*
 
-osmo-bsc
+Ansible will make an osmocom directory at `/var/lib/osmocom` for the
+hlr database.
 
-osmo-bts
+`sudo mkdir -p /var/lib/osmocom`
 
-osmo-trx
 
+Scratch for packet data bringup
+-------------------------------
+
+Need to setup the box ip address to match the vagrant assigned ip address
+
+Log colorization is nice: `sudo tail -F /var/log/syslog | ccze -A`
+
+Need to manually enable ip forwarding and ip masquerade
