@@ -1,11 +1,11 @@
 [Unit]
-Description=OpenBSC BSC
-Wants=osmo-bsc-mgcp.service
+Description=Osmocom BSC
+Wants=nitb-osmo-mgw.service
 
 [Service]
 Type=simple
-Restart=always
 ExecStart=/usr/bin/osmo-bsc -c /etc/osmocom/osmo-bsc.cfg -s
+Restart=always
 RestartSec=2
 
 [Install]

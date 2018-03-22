@@ -1,13 +1,12 @@
 [Unit]
 Description=Osmocom Mobile Switching Center (MSC)
-Wants=osmo-hlr.service
-After=osmo-hlr.service
-After=osmo-hnbgw.service
+Wants=nitb-osmo-hlr.service nitb-osmo-mgw.service
+After=nitb-osmo-hlr.service
 
 [Service]
 Type=simple
-Restart=always
 ExecStart=/usr/bin/osmo-msc -c /etc/osmocom/osmo-msc.cfg
+Restart=always
 RestartSec=2
 
 [Install]

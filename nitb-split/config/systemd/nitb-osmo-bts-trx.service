@@ -1,7 +1,7 @@
 [Unit]
 Description=Osmocom osmo-bts for osmo-trx
-Requires=osmo-trx.service osmo-bsc.service
-After=osmo-trx.service osmo-bsc.service
+Requires=nitb-osmo-trx.service nitb-osmo-bsc.service
+After=nitb-osmo-trx.service nitb-osmo-bsc.service
 
 
 [Service]
