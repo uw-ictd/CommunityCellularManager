@@ -4,7 +4,7 @@ Description=Osmocom Media Gateway (MGW)
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/bin/osmo-mgw -s -c /etc/osmocom/osmo-mgw.cfg
+ExecStart=/usr/bin/osmo-mgw -c /etc/osmocom/osmo-mgw.cfg
 RestartSec=2
 
 [Install]
