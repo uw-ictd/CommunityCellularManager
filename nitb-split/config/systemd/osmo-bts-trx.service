@@ -1,0 +1,20 @@
+[Unit]
+Description=Osmocom osmo-bts for osmo-trx
+Requires=osmo-trx.service osmo-bsc.service
+After=osmo-trx.service osmo-bsc.service
+
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/osmo-bts-trx -s -c /etc/osmocom/osmo-bts.cfg
+Restart=always
+RestartSec=2
+
+# Use a real time round robin thread scheduling policy to process
+# messages quickly enough.
+CPUSchedulingPolicy=rr
+# Note this is the lowest scheduling priority, 99 is the highest.
+CPUSchedulingPriority=50
+
+[Install]
+WantedBy=multi-user.target

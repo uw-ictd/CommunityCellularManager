@@ -1,0 +1,18 @@
+[Unit]
+Description=The Osmocom SDR trx (transceiver)
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/osmo-trx -C /etc/osmocom/osmo-trx.cfg
+
+#Restart=always
+#RestartSec=2
+
+# Use a real time round robin thread scheduling policy to process
+# messages quickly enough.
+CPUSchedulingPolicy=rr
+# Note this a low scheduling priority, 99 is the highest.
+CPUSchedulingPriority=2
+
+[Install]
+WantedBy=multi-user.target
