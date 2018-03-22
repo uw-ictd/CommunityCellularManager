@@ -75,4 +75,18 @@
         force: yes
       with_fileglob:
         - ../config/nitb/*
+
+    - name: Copy osmocom service files
+      copy:
+        src: "{{ item }}"
+        dest: /lib/systemd/system/
+        force: yes
+      with_fileglob:
+        - ../config/systemd/*
+      register: osmocom_services
+
+    - name: Reload systemd daemon if necessary
+      when: osmocom_services.changed
+      command: systemctl daemon-reload
+      
         
