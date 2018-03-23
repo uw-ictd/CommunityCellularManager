@@ -2,6 +2,5 @@
 cmd="${1:-start}"
 set -ex
 systemctl $cmd nitb-osmo-hlr nitb-osmo-msc nitb-osmo-mgw nitb-osmo-stp\
-               nitb-osmo-bsc nitb-osmo-bts-trx nitb-osmo-trx
-
-# osmo-pcu osmo-ggsn osmo-sgsn
+               nitb-osmo-bsc nitb-osmo-bts-trx nitb-osmo-trx nitb-osmo-pcu\
+               nitb-osmo-ggsn nitb-osmo-sgsn
