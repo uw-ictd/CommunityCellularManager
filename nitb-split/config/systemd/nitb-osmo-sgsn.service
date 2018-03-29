@@ -2,7 +2,6 @@
 Description=Osmocom SGSN (Serving GPRS Support Node)
 Wants=nitb-osmo-hlr.service nitb-osmo-ggsn.service
 After=nitb-osmo-hlr.service nitb-osmo-ggsn.service
-After=nitb-osmo-hnbgw.service
 
 [Service]
 Type=simple
