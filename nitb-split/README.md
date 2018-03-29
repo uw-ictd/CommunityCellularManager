@@ -56,3 +56,15 @@ Need to setup the box ip address to match the vagrant assigned ip address
 Log colorization is nice: `sudo tail -F /var/log/syslog | ccze -A`
 
 Need to manually enable ip forwarding and ip masquerade
+
+To enable ip forwarding with echo you need to do so from a root shell,
+`sudo su ; echo 1 > /proc/sys/net/ipv4/ip_forward ; exit`
+
+Need to automate disabling the default osmo services and installing the nitb service files.
+
+Enable IP masquerade on the eth0 output interface
+
+`iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE`
+
+Need to set an APN in the phone, but it doesn't matter what is set, as
+long as it's *not* the apn set in the osmocom config for some reason.
