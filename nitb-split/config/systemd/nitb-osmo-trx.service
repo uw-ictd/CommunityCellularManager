@@ -13,7 +13,7 @@ RestartSec=2
 # messages quickly enough.
 CPUSchedulingPolicy=rr
 # Note this a low scheduling priority, 99 is the highest.
-CPUSchedulingPriority=2
+CPUSchedulingPriority=55
 
 [Install]
 WantedBy=multi-user.target
