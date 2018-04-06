@@ -1,0 +1,5 @@
+# Ignore the vagrant status directory
+/.vagrant/
+
+# Ignore ansible retry files
+deploy/nitb.retry
