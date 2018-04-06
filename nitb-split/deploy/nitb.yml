@@ -63,6 +63,12 @@
           - osmo-bts-trx
           - osmo-trx
 
+    - name: Install Osmocom packet switch components
+      apt: pkg={{ item }} state=present update_cache=no
+      with_items:
+          - osmo-sgsn
+          - osmo-ggsn
+
     - name: Create a directory for the HLR
       file:
           path: /var/lib/osmocom
@@ -88,5 +94,41 @@
     - name: Reload systemd daemon if necessary
       when: osmocom_services.changed
       command: systemctl daemon-reload
-      
-        
+
+    - name: Mask the default Osmocom unit files
+      service:
+        name: "{{ item }}"
+        enabled: no
+        masked: yes
+        no_block: yes
+        state: stopped
+      with_items:
+          - osmo-hlr
+          - osmo-msc
+          - osmo-mgw
+          - osmo-stp
+          - osmo-bsc
+          - osmo-bts-trx
+          - osmo-ggsn
+          - osmo-sgsn
+          - osmo-pcu
+          - osmo-trx
+
+    - name: Enable kernel IP forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: 1
+        sysctl_set: yes
+        reload: yes
+
+    # TODO(matt9j) Migrate to nftables as required.
+    - name: Enable nat in iptables
+      iptables: table=nat chain=POSTROUTING out_interface=eth0 jump=MASQUERADE
+      register: enable_masquerade
+
+    - name: Install iptables-persistent
+      apt: pkg=iptables-persistent state=present update_cache=no
+
+    - name: Save iptables configuration
+      shell: "iptables-save > /etc/iptables/rules.v4"
+      when: enable_masquerade.changed
