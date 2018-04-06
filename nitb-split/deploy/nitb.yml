@@ -39,14 +39,11 @@
           - libuhd-dev
           - libuhd003
           - uhd-host
+      register: uhd_install
 
-    # TODO(matt9j) Figure out when the images actually need to be
-    # re-downloaded. Flashing the radio firmware may need to take
-    # place on the host to even be detected by virtualbox, but in an
-    # actual deployment will need to take place on the nuc.
-
-    #- name: Download the latest USRP images
-    #  shell: uhd_images_downloader
+    - name: Download the latest USRP images
+      shell: uhd_images_downloader
+      when: uhd_install.changed
 
     - name: Install Osmocom core network components
       apt: pkg={{ item }} state=present update_cache=no
@@ -66,6 +63,7 @@
     - name: Install Osmocom packet switch components
       apt: pkg={{ item }} state=present update_cache=no
       with_items:
+          - osmo-pcu
           - osmo-sgsn
           - osmo-ggsn
 
@@ -112,7 +110,6 @@
           - osmo-ggsn
           - osmo-sgsn
           - osmo-pcu
-          - osmo-trx
 
     - name: Enable kernel IP forwarding
       sysctl:
