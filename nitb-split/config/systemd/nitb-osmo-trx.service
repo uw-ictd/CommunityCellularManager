@@ -1,12 +1,13 @@
 [Unit]
 Description=The Osmocom SDR trx (transceiver)
+Wants=nitb-osmo-bts-trx.service
 
 [Service]
 Type=simple
 ExecStart=/usr/bin/osmo-trx -C /etc/osmocom/osmo-trx.cfg
 
-#Restart=always
-#RestartSec=2
+Restart=always
+RestartSec=2
 
 # Use a real time round robin thread scheduling policy to process
 # messages quickly enough.
