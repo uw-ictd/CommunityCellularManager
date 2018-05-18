@@ -58,7 +58,7 @@
       apt: pkg={{ item }} state=present update_cache=no
       with_items:
           - osmo-bts-trx
-          - osmo-trx
+          - osmo-trx-uhd
 
     - name: Install Osmocom packet switch components
       apt: pkg={{ item }} state=present update_cache=no

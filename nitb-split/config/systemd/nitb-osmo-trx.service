@@ -4,7 +4,7 @@ Wants=nitb-osmo-bts-trx.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/osmo-trx -C /etc/osmocom/osmo-trx.cfg
+ExecStart=/usr/bin/osmo-trx-uhd -C /etc/osmocom/osmo-trx.cfg
 
 Restart=always
 RestartSec=2
