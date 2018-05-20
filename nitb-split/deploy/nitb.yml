@@ -2,28 +2,12 @@
 
 - name: Set up a network in a box on a local virtual machine
   hosts: nitb
+  roles:
+    - { role: osmo-packet-core }
+    - { role: osmo-bts-trx }
   become: yes
 
   tasks:
-
-    - name: Add Osmocom apt GPG key
-      apt_key:
-          url: https://download.opensuse.org/repositories/network:/osmocom:/nightly/Debian_9.0/Release.key
-          state: present
-
-    # TODO(issues/6) Convert to the latest branch when stable and ready for deployment.
-    - name: Add Osmocom Debian 9 nightly repo
-      apt_repository:
-          repo: 'deb http://download.opensuse.org/repositories/network:/osmocom:/nightly/Debian_9.0 ./'
-          update_cache: no
-          mode: 664
-      register: osmocom_repo
-
-    - name: Run the equivalent of "apt-get update" as a separate step
-      when: osmocom_repo.changed
-      apt:
-          update_cache: yes
-
     - name: Install utilities for terminal interaction
       apt: pkg={{ item }} state=present update_cache=no
       with_items:
@@ -32,45 +16,6 @@
           - python3-dev
           - emacs-nox
           - usbutils
-
-    - name: Install uhd drivers for USRP
-      apt: pkg={{ item }} state=present update_cache=no
-      with_items:
-          - libuhd-dev
-          - libuhd003
-          - uhd-host
-      register: uhd_install
-
-    - name: Download the latest USRP images
-      shell: uhd_images_downloader
-      when: uhd_install.changed
-
-    - name: Install Osmocom core network components
-      apt: pkg={{ item }} state=present update_cache=no
-      with_items:
-          - osmo-hlr
-          - osmo-msc
-          - osmo-mgw
-          - osmo-stp
-          - osmo-bsc
-
-    - name: Install Osmocom USRP BTS components
-      apt: pkg={{ item }} state=present update_cache=no
-      with_items:
-          - osmo-bts-trx
-          - osmo-trx-uhd
-
-    - name: Install Osmocom packet switch components
-      apt: pkg={{ item }} state=present update_cache=no
-      with_items:
-          - osmo-pcu
-          - osmo-sgsn
-          - osmo-ggsn
-
-    - name: Create a directory for the HLR
-      file:
-          path: /var/lib/osmocom
-          state: directory
 
     - name: Copy osmocom configuration files
       copy:
@@ -110,22 +55,3 @@
           - osmo-ggsn
           - osmo-sgsn
           - osmo-pcu
-
-    - name: Enable kernel IP forwarding
-      sysctl:
-        name: net.ipv4.ip_forward
-        value: 1
-        sysctl_set: yes
-        reload: yes
-
-    # TODO(matt9j) Migrate to nftables as required.
-    - name: Enable nat in iptables
-      iptables: table=nat chain=POSTROUTING out_interface=eth0 jump=MASQUERADE
-      register: enable_masquerade
-
-    - name: Install iptables-persistent
-      apt: pkg=iptables-persistent state=present update_cache=no
-
-    - name: Save iptables configuration
-      shell: "iptables-save > /etc/iptables/rules.v4"
-      when: enable_masquerade.changed

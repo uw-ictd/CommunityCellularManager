@@ -1,0 +1,38 @@
+- name: Install Osmocom core network components
+  apt: pkg={{ item }} state=present update_cache=no
+  with_items:
+    - osmo-hlr
+    - osmo-msc
+    - osmo-mgw
+    - osmo-stp
+    - osmo-bsc
+
+- name: Install Osmocom packet switch components
+  apt: pkg={{ item }} state=present update_cache=no
+  with_items:
+    - osmo-sgsn
+    - osmo-ggsn
+
+- name: Create a directory for the HLR
+  file:
+    path: /var/lib/osmocom
+    state: directory
+
+- name: Enable kernel IP forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    reload: yes
+
+# TODO(matt9j) Migrate to nftables as required.
+- name: Enable nat in iptables
+  iptables: table=nat chain=POSTROUTING out_interface=eth0 jump=MASQUERADE
+  register: enable_masquerade
+
+- name: Install iptables-persistent
+  apt: pkg=iptables-persistent state=present update_cache=no
+
+- name: Save iptables configuration
+  shell: "iptables-save > /etc/iptables/rules.v4"
+  when: enable_masquerade.changed

@@ -1,0 +1,19 @@
+- name: Install uhd drivers for USRP
+  apt: pkg={{ item }} state=present update_cache=no
+  with_items:
+    - libuhd-dev
+    - libuhd003
+    - uhd-host
+  register: uhd_install
+
+- name: Download the latest USRP images
+  become: yes
+  shell: uhd_images_downloader
+  when: uhd_install.changed
+
+- name: Install Osmocom USRP BTS components
+  apt: pkg={{ item }} state=present update_cache=no
+  with_items:
+    - osmo-bts-trx
+    - osmo-trx-uhd
+    - osmo-pcu

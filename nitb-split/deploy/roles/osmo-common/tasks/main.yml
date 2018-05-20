@@ -1,0 +1,17 @@
+- name: Add Osmocom apt GPG key
+  apt_key:
+      url: https://download.opensuse.org/repositories/network:/osmocom:/latest/Debian_9.0/Release.key
+      state: present
+
+# TODO(issues/6) Convert to the latest branch when stable and ready for deployment.
+- name: Add Osmocom Debian 9 nightly repo
+  apt_repository:
+      repo: 'deb http://download.opensuse.org/repositories/network:/osmocom:/latest/Debian_9.0 ./'
+      update_cache: no
+      mode: 664
+  register: osmocom_repo
+
+- name: Run the equivalent of "apt-get update" as a separate step
+  when: osmocom_repo.changed
+  apt:
+      update_cache: yes
